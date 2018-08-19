@@ -117,6 +117,21 @@ int ReadConfig(RedisModuleString **argv, int argc, const char **err) {
     }
   }
 
+  if (argc >= 2 && RMUtil_ArgIndex("GC_POLICY", argv, argc) >= 0) {
+    char* gcMethod;
+    RMUtil_ParseArgsAfter("GC_POLICY", argv, argc, "c", &gcMethod);
+    if(strcmp(gcMethod, "DEFAULT") == 0){
+      RSGlobalConfig.gcPolicy = GCPolicy_Default;
+    }else if(strcmp(gcMethod, "FORK") == 0){
+      RSGlobalConfig.gcPolicy = GCPolicy_Fork;
+    }else{
+      *err = "Invalid GC_POLICY";
+      return REDISMODULE_ERR;
+    }
+  }
+
+
+
   return REDISMODULE_OK;
 }
 
