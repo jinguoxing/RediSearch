@@ -130,6 +130,15 @@ int ReadConfig(RedisModuleString **argv, int argc, const char **err) {
     }
   }
 
+  if (argc >= 2 && RMUtil_ArgIndex("FORK_GC_RUN_INTERVAL", argv, argc) >= 0) {
+#define MIN_FORK_GC_RUN_INTERVAL 5
+    RMUtil_ParseArgsAfter("FORK_GC_RUN_INTERVAL", argv, argc, "l", &RSGlobalConfig.forkGcRunIntervalSec);
+    if (RSGlobalConfig.forkGcRunIntervalSec <= MIN_FORK_GC_RUN_INTERVAL) {
+      *err = "Invalid FORK_GC_RUN_INTERVAL value";
+      return REDISMODULE_ERR;
+    }
+  }
+
 
 
   return REDISMODULE_OK;
